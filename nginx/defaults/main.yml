@@ -1,0 +1,38 @@
+---
+
+nginx:
+  install_from: mainline
+  install_latest: True
+  update_cache: True
+  cache_valid_time: 300
+  __install_include_map:
+    debian: deb
+    ubuntu: deb
+    centos: rpm
+    redhat: rpm
+  stable_repos:
+    <<: &__stable_deb_repos
+      repos:
+        - deb http://nginx.org/packages/{{ ansible_distribution | lower }}/ {{ ansible_distribution_release }} nginx
+        - deb-src http://nginx.org/packages/{{ ansible_distribution | lower }}/ {{ ansible_distribution_release }} nginx
+      key:
+        url: http://nginx.org/keys/nginx_signing.key
+    <<: &__stable_rpm_baseurl
+      baseurl: http://nginx.org/packages/{{ ansible_distribution }}/{{ ansible_distribution_release }}/$basearch/
+    ubuntu: *__stable_deb_repos
+    debian: *__stable_deb_repos
+    centos: *__stable_rpm_baseurl
+    redhat: *__stable_rpm_baseurl
+  mainline_repos:
+    <<: &__mainline_deb_repos
+      repos:
+        - deb http://nginx.org/packages/mainline/{{ ansible_distribution | lower }}/ {{ ansible_distribution_release }} nginx
+        - deb-src http://nginx.org/packages/mainline/{{ ansible_distribution | lower }}/ {{ ansible_distribution_release }} nginx
+      key:
+        url: http://nginx.org/keys/nginx_signing.key
+    <<: &__mainline_rpm_baseurl
+      baseurl: http://nginx.org/packages/mainline/{{ ansible_distribution }}/{{ ansible_distribution_release }}/$basearch/
+    ubuntu: *__mainline_deb_repos
+    debian: *__mainline_deb_repos
+    centos: *__mainline_rpm_baseurl
+    redhat: *__mainline_rpm_baseurl

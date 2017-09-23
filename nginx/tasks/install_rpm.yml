@@ -1,0 +1,13 @@
+---
+
+- name: Add nginx official repository key
+  yum_repository:
+    name: nginx repo
+    baseurl: "{{ nginx[nginx['install_from'] + '_repos'][ansible_distribution | lower]['baseurl'] }}"
+    gpgcheck: False
+    enabled: True
+
+- name: Install nginx
+  yum:
+    name: nginx
+    state: "{{ [nginx['install_latest'] | string] | map('extract', {'True': 'latest', 'False': 'present'}) | list | first }}"

@@ -1,0 +1,19 @@
+---
+
+- name: Add nginx official repository key
+  apt_key:
+    url: "{{ nginx[nginx['install_from'] + '_repos'][ansible_distribution | lower]['key']['url'] }}"
+  when: nginx['install_from'] in ['stable', 'mainline']
+
+- name: Add nginx official repository
+  apt_repository:
+    repo: "{{ item }}"
+  with_items: "{{ nginx[nginx['install_from'] + '_repos'][ansible_distribution | lower]['repos'] }}"
+  when: nginx['install_from'] in ['stable', 'mainline']
+
+- name: Install nginx
+  apt:
+    name: nginx
+    state: "{{ [nginx['install_latest'] | string] | map('extract', {'True': 'latest', 'False': 'present'}) | list | first }}"
+    update_cache: "{{ nginx['update_cache'] }}"
+    cache_valid_time: "{{ nginx['cache_valid_time'] }}"

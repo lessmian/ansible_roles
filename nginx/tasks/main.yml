@@ -1,0 +1,6 @@
+---
+
+- name: Include install.yml
+  include_tasks: install_{{ [ansible_distribution | lower] | map('extract', nginx['__install_include_map']) | list | first }}.yml
+
+
